@@ -106,7 +106,7 @@ class VEDirectConfigurationEditor(weewx.drivers.AbstractConfEditor):
     # This section is for the VEDirect driver.
 
     # The port to which the device is connected
-    host = /dev/ttyUSB0
+    port = /dev/ttyUSB0
 
     # The driver to use
     driver = user.vedirect
