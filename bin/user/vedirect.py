@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # Copyright 2018-2022 Matthew Wall
+# Distributed under the terms of the GNU Public License (GPLv3)
 #
 # Driver for Victron devices that communicate using VEDirect, including
 # MPPT and BMV.
