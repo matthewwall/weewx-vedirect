@@ -12,6 +12,73 @@
 #   https://github.com/karioja/vedirect
 # uses extensions to vedirect.py by victronPi
 #   http://majora.myqnapcloud.com:10080/root/victronPi/blob/master/vedirect.py
+#
+# To test the hardware and this driver:
+#
+# cd /home/weewx
+# PYTHONPATH=bin python bin/user/vedirect.py --port /dev/ttyUSB0
+#
+# This should result in dictionaries such as this:
+#
+# data: {'LOAD': 'OFF', 'H19': '34264', 'VPV': '18750', 'ERR': '0',
+#        'FW': '130', 'I': '0', 'H21': '152', 'PID': '0xA056',
+#        'H20': '63', 'H23': '156', 'H22': '62', 'HSDS': '347',
+#        'SER#': 'HQ1804IWW4P', 'V': '11370', 'CS': '3', 'PPV': '0'}
+#
+# According to victron documentation for the VE.Direct protocol:
+#
+# label    units  description
+#     V       mV  main (battery) voltage
+#    VS       mV  auxiliar (starter) voltage
+#    VM       mV  mid-point voltage of the battery bank
+#    DM        %  mid-point deviation of the battery bank
+#   VPV       mV  panel voltage
+#   PPV        W  panel power
+#     I       mA  battery current
+#    IL       mA  load current
+#  LOAD           load output state (ON/OFF)
+#     T        C  battery temperature
+#     P        W  instantaneous power
+#    CE      mAh  consumed amp hours
+#   SOC        %  state-of-charge
+#   TTG        m  time-to-go
+# alarm           alarm condition active
+# relay           relay state
+#    AR           alarm reason
+#    H1      mAh  depth of deepest discharge
+#    H2      mAh  depth of the last discharge
+#    H3      mAh  depth of average discharge
+#    H4           number of charge cycles
+#    H5           number of full discharges
+#    H6      mAh  cumulative amp hours drawn
+#    H7       mV  minimum main (battery) voltage
+#    H8       mV  maximum main (battery) voltage
+#    H9        s  number of seconds since last full charge
+#   H10           number of automatic synchronizations
+#   H11           number of low main voltage alarms
+#   H12           number of high main voltage alarms
+#   H13           number of low auxiliary voltage alarms
+#   H14           number of high auxiliary voltage alarms
+#   H15       mV  minimum auxiliary (battery) voltage
+#   H16       mV  maximum auxiliary (battery) voltage
+#   H17  0.01kWh  amount of discharged energy
+#   H18  0.01kWh  amount of charged energy
+#   H19  0.01kWh  yield total (user resettable counter)
+#   H20  0.01kWh  yield today
+#   H21        W  maximum power today
+#   H22
+#   H23
+#   ERR           error code
+#    CS           state of operation
+#   BMV           model description (deprecated)
+#    FW           firmware version
+#   PID           product ID
+#  SER#           serial number
+#  HSDS           day sequence number (0.364)
+#  MODE           device mode
+# AC_OUT_V 0.01V  AC output voltage
+# AC_OUT_I  0.1A  AC output current
+#  WARN           warning reason
 
 DRIVER_NAME = "VEDirect"
 DRIVER_VERSION = "0.2"
@@ -123,8 +190,8 @@ class VEDirectConfigurationEditor(weewx.drivers.AbstractConfEditor):
     driver = user.vedirect
 """
     def prompt_for_settings(self):
-        print "Specify the serial port on which the device is connected, for"
-        print "example /dev/ttyUSB0 or /dev/ttyS0."
+        print("Specify the serial port on which the device is connected, for")
+        print("example /dev/ttyUSB0 or /dev/ttyS0.")
         port = self._prompt('port', '/dev/ttyUSB0')
         return {'port': port}
 
@@ -321,7 +388,7 @@ if __name__ == '__main__':
     (options, args) = parser.parse_args()
 
     if options.version:
-        print "vedirect driver version %s" % DRIVER_VERSION
+        print("vedirect driver version %s" % DRIVER_VERSION)
         exit(1)
 
     if options.debug:
@@ -330,5 +397,5 @@ if __name__ == '__main__':
     with VEDirect(options.port) as s:
         while True:
             data = s.get_data()
-            print "data:", data
+            print("data:", data)
             time.sleep(1)
