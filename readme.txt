@@ -1,4 +1,5 @@
 weewx-vedirect
+Copyright 2018-2022 Matthew Wall
 
 This is a driver for weewx that collects data from Victron devices such as the
 MPPT using the VEDirect interface.
@@ -7,18 +8,14 @@ Installation
 
 0) install weewx (see the weewx user guide)
 
-1) download the driver
+1) install the driver
 
-wget -O weewx-vedirect.zip https://github.com/matthewwall/weewx-vedirect/archive/master.zip
+wee_extension --install https://github.com/matthewwall/weewx-vedirect/archive/master.zip
 
-2) install the driver
-
-wee_extension --install weewx-vedirect.zip
-
-3) configure the driver
+2) configure the driver
 
 wee_config --reconfigure
 
-4) start weewx
+3) start weewx
 
 sudo /etc/init.d/weewx start

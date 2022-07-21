@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Copyright 2018 Matthew Wall
+# Copyright 2018-2022 Matthew Wall
 #
 # Driver for Victron devices that communicate using VEDirect, including
 # MPPT and BMV.
@@ -12,6 +12,10 @@
 # uses extensions to vedirect.py by victronPi
 #   http://majora.myqnapcloud.com:10080/root/victronPi/blob/master/vedirect.py
 
+DRIVER_NAME = "VEDirect"
+DRIVER_VERSION = "0.2"
+DEFAULT_PORT = '/dev/ttyUSB0'
+
 import os
 import serial
 import syslog
@@ -21,9 +25,28 @@ import weewx.drivers
 import weewx.engine
 import weewx.units
 
-DRIVER_NAME = "VEDirect"
-DRIVER_VERSION = "0.1"
-DEFAULT_PORT = '/dev/ttyUSB0'
+try:
+    # New-style weewx logging
+    import weeutil.logger
+    import logging
+    log = logging.getLogger(__name__)
+    def logdbg(msg):
+        log.debug(msg)
+    def loginf(msg):
+        log.info(msg)
+    def logerr(msg):
+        log.error(msg)
+except ImportError:
+    # Old-style weewx logging
+    import syslog
+    def logmsg(level, msg):
+        syslog.syslog(level, 'vedirect: %s: %s' % msg)
+    def logdbg(msg):
+        logmsg(syslog.LOG_DEBUG, msg)
+    def loginf(msg):
+        logmsg(syslog.LOG_INFO, msg)
+    def logerr(msg):
+        logmsg(syslog.LOG_ERR, msg)
 
 
 def loader(config_dict, engine):
@@ -31,19 +54,6 @@ def loader(config_dict, engine):
 
 def confeditor_loader():
     return VEDirectConfigurationEditor()
-
-
-def logmsg(dst, msg):
-    syslog.syslog(dst, 'vedirect: %s' % msg)
-
-def logdbg(msg):
-    logmsg(syslog.LOG_DEBUG, msg)
-
-def loginf(msg):
-    logmsg(syslog.LOG_INFO, msg)
-
-def logerr(msg):
-    logmsg(syslog.LOG_ERR, msg)
 
 
 # schema specifically for victron devices
@@ -112,7 +122,7 @@ class VEDirectConfigurationEditor(weewx.drivers.AbstractConfEditor):
     driver = user.vedirect
 """
     def prompt_for_settings(self):
-        print "Specify the serial port on which the station is connected, for"
+        print "Specify the serial port on which the device is connected, for"
         print "example /dev/ttyUSB0 or /dev/ttyS0."
         port = self._prompt('port', '/dev/ttyUSB0')
         return {'port': port}
